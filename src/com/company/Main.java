@@ -321,9 +321,116 @@ public class Main {
 //        }
 //
 
-        // all empty
-        echo(isPalindrome("A man, a plan, a canal: Panama")); // 2
+        TreeNode root = new TreeNode(1);
+        root.left = new TreeNode(3);
+        root.right = new TreeNode(2);
+        root.left.left = new TreeNode(5);
+        root.left.right = new TreeNode(3);
+        root.right.right = new TreeNode(9);
 
+        echo(largestValues(null));
+
+
+    }
+
+    public static List<Integer> largestValues(TreeNode root) {
+        LinkedList<TreeNode> nodeQueue = new LinkedList<>();
+
+        List<Integer> res = new ArrayList<>();
+        int max = Integer.MIN_VALUE;
+        int rowAmountCurr = 1;
+        int childrenAmt = 0;
+
+        nodeQueue.add(root);
+
+        while(!nodeQueue.isEmpty()) {
+
+            TreeNode curr;
+            if (rowAmountCurr == 0) {
+                curr = nodeQueue.peek();
+            } else {
+                curr = nodeQueue.pop();
+            }
+
+//            TreeNode curr = nodeQueue.pop();
+
+            if (rowAmountCurr != 0) {
+                if (max < curr.val)
+                    max = curr.val;
+            }
+
+            if (rowAmountCurr != 0) {
+                if (curr.left != null) {
+                    nodeQueue.add(curr.left);
+                    childrenAmt++;
+                }
+
+                if (curr.right != null) {
+                    nodeQueue.add(curr.right);
+                    childrenAmt++;
+                }
+                rowAmountCurr--;
+
+            } else {
+                res.add(max);
+                rowAmountCurr = childrenAmt;
+                max = Integer.MIN_VALUE;
+                childrenAmt = 0;
+            }
+
+        }
+
+        res.add(max);
+
+        return res;
+    }
+
+
+    static int countOccurrenceOfA(String s) {
+        int res = 0;
+        for (char c : s.toCharArray()) {
+            if (c == 'a')
+                res++;
+        }
+        return res;
+    }
+    // Complete the repeatedString function below.
+    static long repeatedString(String s, long n) {
+        // find ratio
+        int aOccurrence = countOccurrenceOfA(s);
+        double ratio =  aOccurrence / (double) s.length();
+
+        // find modulos
+        int mod = (int) n % s.length();
+
+        // substring original string by 0 -> modulos inclusive
+        String substring = s.substring(0, mod);
+
+        // count the 'a' for substring
+        int subAOccurrence = countOccurrenceOfA(substring);
+
+        // return sum == (n * ratio) + (countOccurrenceOfA(substring))
+        double divide =  (n - mod) * ratio;
+
+        return (long) divide + countOccurrenceOfA(substring);
+    }
+
+    // convert bst such that each value is now the sum of its value and everything larger than itself
+    private static int sum = 0;
+    /*
+        - given the nature of BST, an inverse in-order traversal that keeps track of the sum is able to do the trick
+        - the first iteration, because it is reverse inorder, will be the largest number so the sum is at 0
+        - then each step the sum is getting larger and the next traversed element will always add the correct value
+     */
+    public static TreeNode convertBST(TreeNode root) {
+
+        if (root != null) {
+            convertBST(root.right);
+            sum += root.val;
+            root.val = sum;
+            convertBST(root.left);
+        }
+        return root;
     }
 
     public static boolean isPalindrome(String s) {
@@ -471,6 +578,7 @@ public class Main {
     }
 
     public static void populateQueue(LinkedList queue, String s) {
+
         StringBuilder sb = new StringBuilder();
         int num = 0;
         String str;
