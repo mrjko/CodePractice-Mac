@@ -321,17 +321,215 @@ public class Main {
 //        }
 //
 
-        TreeNode root = new TreeNode(1);
-        root.left = new TreeNode(3);
-        root.right = new TreeNode(2);
-        root.left.left = new TreeNode(5);
-        root.left.right = new TreeNode(3);
-        root.right.right = new TreeNode(9);
-
-        echo(largestValues(null));
+        echo(lilysHomework(new int[]{})); // 0
+        echo(lilysHomework(new int[]{3,4,2,5,1})); // 2
+        echo(lilysHomework(new int[]{7,15,12,3})); // 2
+        echo(lilysHomework(new int[]{12,15,7,3})); // 1
+        echo(lilysHomework(new int[]{15,7,12,3})); // 1
 
 
     }
+
+    public static boolean isArraySorted(int[] arr, boolean asc) {
+        for (int i = 0; i < arr.length - 1; i++) {
+            if (asc) {
+                if ((arr[i+1] - arr[i]) < 0) {
+                    return false;
+                }
+            } else {
+                if ((arr[i+1] - arr[i]) > 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static int getSwapCounter(int[] arr, boolean asc) {
+        int temp;
+        int tracker = (asc) ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+        int swapIndex = 0;
+        int counter = 0;
+
+        for (int i = 0; i < arr.length; i++) {
+            temp = arr[i];
+            for (int j = i; j < arr.length; j++) {
+                if (asc) {
+                    if (tracker > arr[j]) {
+                        tracker = arr[j];
+                        swapIndex = j;
+                    }
+                } else {
+                    if (tracker < arr[j]) {
+                        tracker = arr[j];
+                        swapIndex = j;
+                    }
+                }
+            }
+
+            // swap smallest with i
+            if (i != swapIndex) {
+                arr[i] = tracker;
+                arr[swapIndex] = temp;
+                counter++;
+            }
+
+            tracker = (asc) ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+
+            if (isArraySorted(arr, asc)) {
+                return counter;
+            }
+        }
+
+        return (arr.length == 0) ? 0 : counter;
+    }
+
+    // returns the min amount of swaps for sorting it to min or max
+    public static int lilysHomeworkHelper(int[] minArr, int[] maxArr) {
+        int temp;
+        int smallest = Integer.MAX_VALUE;
+        int largest = Integer.MIN_VALUE;
+        int minSwapIndex = 0;
+        int maxSwapIndex = 0;
+        int minCounter = 0;
+        int maxCounter = 0;
+
+        boolean minSaved = false;
+        boolean maxSaved = false;
+
+        int minRes = 0;
+        int maxRes = 0;
+
+        for (int i = 0; i < minArr.length; i++) {
+            temp = minArr[i];
+            for (int j = i; j < minArr.length; j++) {
+                if (smallest > minArr[j]) {
+                    smallest = minArr[j];
+                    minSwapIndex = j;
+                }
+                if (largest < maxArr[j]) {
+                    largest = maxArr[j];
+                    maxSwapIndex = j;
+                }
+            }
+
+            // swap smallest with i
+            if (i != minSwapIndex) {
+                minArr[i] = smallest;
+                minArr[minSwapIndex] = temp;
+                minCounter++;
+            }
+
+            if (i != maxSwapIndex) {
+                maxArr[i] = largest;
+                maxArr[maxSwapIndex] = temp;
+                maxCounter++;
+            }
+
+            smallest = Integer.MAX_VALUE;
+            largest = Integer.MIN_VALUE;
+
+            if (isArraySorted(minArr, true) && !minSaved) {
+                minSaved = true;
+                minRes = minCounter;
+            }
+
+            if (isArraySorted(maxArr, false) && !maxSaved) {
+                maxSaved = true;
+                maxRes = maxCounter;
+            }
+        }
+
+        return (minArr.length == 0) ? 0 : Math.min(minRes, maxRes);
+    }
+
+    public static int lilysHomework(int[] arr) {
+        // bbsort O(n2)
+
+        return lilysHomeworkHelper(arr, arr.clone());
+
+
+//        int counter1 = getSwapCounter(arr.clone(), true);
+//        int counter2 = getSwapCounter(arr, false);
+//
+//        return Math.min(counter1, counter2);
+    }
+
+    public static String isValid(String s) {
+        HashMap<Character, Integer> map = new HashMap<>();
+
+        // fill the map wit data
+        for (Character c : s.toCharArray()) {
+            map.computeIfPresent(c, (k, v) -> v + 1);
+            map.putIfAbsent(c, 1);
+        }
+
+        // count and check if is valid
+        Integer count1 = null;
+        Integer count2 = null;
+        int oneCounter = 0;
+
+        // if we find a third unique count then it is false
+        for (Map.Entry<Character, Integer> entry : map.entrySet()) {
+            if (entry.getValue().equals(1)) oneCounter++;
+            if (!entry.getValue().equals(count1) && !entry.getValue().equals(count2)) {
+                if (count1 == null) {
+                    count1 = entry.getValue();
+                } else if (count2 == null) {
+                    if (!count1.equals(entry.getValue())) {
+                        count2 = entry.getValue();
+                    }
+                } else {
+                    return "NO";
+                }
+            }
+        }
+
+        if (count1 == null || count2 == null) {
+            return "YES";
+        }
+
+        if (count1.equals(1) || count2.equals(1)) {
+            if (oneCounter == 1) {
+                return "YES";
+            } else {
+                return "NO";
+            }
+        }
+
+        return (Math.abs(count1 - count2) == 1) ? "YES" : "NO";
+    }
+
+    public static String getTheOddNumber(HashMap<Character, Integer> map) {
+        Integer count1 = null;
+        Integer count2 = null;
+
+        // if we find a third unique count then it is false
+        for (Map.Entry<Character, Integer> entry : map.entrySet()) {
+            if (entry.getValue() != count1 || entry.getValue() != count2) {
+                if (count1 == null) {
+                    count1 = entry.getValue();
+                } else if (count2 == null) {
+                    count2 = entry.getValue();
+                } else {
+                    return "NO";
+                }
+            }
+        }
+
+//        if (count1.equals(1) || count2.equals(1)) {
+//            return "YES";
+//        }
+//
+//        if (Math.abs(count1 - count2) == 1) {
+//            return "YES";
+//        }
+//
+        return ((count1.equals(1) || count2.equals(1)) || (Math.abs(count1 - count2) == 1)) ?
+                "YES" : "NO";
+
+    }
+
 
     public static List<Integer> largestValues(TreeNode root) {
         LinkedList<TreeNode> nodeQueue = new LinkedList<>();
