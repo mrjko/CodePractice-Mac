@@ -320,29 +320,7 @@ public class Main {
 //            echo(n.val);
 //        }
 //
-
-        int[][] maze = { {0,    1,    1,    0,    1,    1,    1,    1,    0,    1},
-                         {0,    1,    0,    0,    0,    0,    1,    1,    1,    1},
-                         {0,    1,    0,    0,    1,    0,    1,    1,    1,    1},
-                         {0,    0,    0,    1,    1,    0,    1,    1,    1,    1},
-                         {0,    1,    1,    1,    0,    0,    1,    0,    0,    1},
-                         {1,    1,    1,    1,    0,    1,    1,    0,    0,    1},
-                         {1,    1,    0,    1,    0,    0,    0,    0,    0,    1},
-                         {1,    1,    0,    0,    1,    1,    1,    1,    0,    1},
-                         {0,    1,    1,    0,    1,    1,    1,    1,    0,    1},
-                         {0,    1,    1,    1,    1,    1,    1,    1,    0,    0} };
-
-
-        List<Coord> path = new ArrayList<Coord>();
-
-        mazeSolver(maze, path);
-
-//        printMaze(maze);
-
-        for (Coord c : path) {
-            c.printCoord();
-        }
-
+        
     }
 
     public static void printMaze(int[][] maze) {
