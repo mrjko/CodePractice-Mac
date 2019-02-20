@@ -321,13 +321,153 @@ public class Main {
 //        }
 //
 
-        echo(lilysHomework(new int[]{})); // 0
-        echo(lilysHomework(new int[]{3,4,2,5,1})); // 2
-        echo(lilysHomework(new int[]{7,15,12,3})); // 2
-        echo(lilysHomework(new int[]{12,15,7,3})); // 1
-        echo(lilysHomework(new int[]{15,7,12,3})); // 1
+        int[][] maze = { {0,    1,    1,    0,    1,    1,    1,    1,    0,    1},
+                         {0,    1,    0,    0,    0,    0,    1,    1,    1,    1},
+                         {0,    1,    0,    0,    1,    0,    1,    1,    1,    1},
+                         {0,    0,    0,    1,    1,    0,    1,    1,    1,    1},
+                         {0,    1,    1,    1,    0,    0,    1,    0,    0,    1},
+                         {1,    1,    1,    1,    0,    1,    1,    0,    0,    1},
+                         {1,    1,    0,    1,    0,    0,    0,    0,    0,    1},
+                         {1,    1,    0,    0,    1,    1,    1,    1,    0,    1},
+                         {0,    1,    1,    0,    1,    1,    1,    1,    0,    1},
+                         {0,    1,    1,    1,    1,    1,    1,    1,    0,    0} };
 
 
+        List<Coord> path = new ArrayList<Coord>();
+
+        mazeSolver(maze, path);
+
+//        printMaze(maze);
+
+        for (Coord c : path) {
+            c.printCoord();
+        }
+
+    }
+
+    public static void printMaze(int[][] maze) {
+        for (int row = 0; row < maze.length; row++) {
+            for (int col = 0; col < maze[row].length; col++) {
+                System.out.print(maze[row][col]);
+            }
+            System.out.println(" ");
+        }
+    }
+
+    public static class Coord {
+        private int x;
+        private int y;
+
+        public Coord(int r, int c) {
+            this.y = r;
+            this.x = c;
+        }
+
+        public void printCoord() {
+            System.out.println("(" + this.x + ", " + this.y + ")");
+        }
+
+        public int getRow() { return this.y;  };
+        public int getCol() { return this.x; };
+    }
+
+    public static boolean isValidCoord(int row, int col) {
+        if (row < 0 || row > 9 || col < 0 || col > 9) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean isDeadEnd(int[][] maze, int row, int col) {
+        if (isValidCoord(row - 1, col) && maze[row - 1][col] == 0) {
+            return false;
+        }
+        if (isValidCoord(row + 1, col) && maze[row + 1][col] == 0) {
+            return false;
+        }
+        if (isValidCoord(row, col + 1) && maze[row][col + 1] == 0) {
+            return false;
+        }
+        if (isValidCoord(row, col - 1) && maze[row][col - 1] == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    // we know dis a dead end (visited nodes are numbered as 2)
+    public static Coord backTrack(int[][] maze, int row, int col, List<Coord> path) {
+        maze[row][col] = 1;
+        path.remove(path.size() - 1);
+
+        if (isValidCoord(row-1, col) && maze[row-1][col] == 2) {
+            return new Coord(row-1, col);
+        }
+        if (isValidCoord(row+1, col) && maze[row+1][col] == 2) {
+            return new Coord(row+1, col);
+        }
+        if (isValidCoord(row, col+1) && maze[row][col+1] == 2) {
+            return new Coord(row, col+1);
+        }
+        if (isValidCoord(row, col-1) && maze[row][col-1] == 2) {
+            return new Coord(row, col-1);
+        }
+
+        return null;
+    }
+
+    public static void mazeSolverHelper(int[][] maze, int row, int col, List<Coord> path) {
+        System.out.println("mazeSolverHelper" + row + col);
+        if (!isValidCoord(row, col)) return;
+
+        maze[row][col] = 2;
+        path.add(new Coord(row, col));
+
+        if (row == 9 && col == 9) return;
+
+        while (isDeadEnd(maze, row, col)) {
+            Coord c = backTrack(maze, row, col, path);
+            row = c.getRow();
+            col = c.getCol();
+        }
+
+        if (isValidCoord(row+1, col) && maze[row+1][col] == 0) {
+            mazeSolverHelper(maze, row+1, col, path);
+        }
+
+        if (isValidCoord(row-1, col) && maze[row-1][col] == 0) {
+            mazeSolverHelper(maze, row-1, col, path);
+        }
+
+        if (isValidCoord(row, col+1) && maze[row][col+1] == 0) {
+            mazeSolverHelper(maze, row, col+1, path);
+        }
+
+        if (isValidCoord(row, col-1) && maze[row][col-1] == 0) {
+            mazeSolverHelper(maze, row, col-1, path);
+        }
+
+    }
+
+//    public static List<Coord> populateResult(int[][] maze) {
+//
+//    }
+
+    public static int[][] mazeSolver(int[][] maze, List<Coord> path) {
+        mazeSolverHelper(maze, 0, 0, path);
+        // maze should be marked 2 from end to start
+//        List<Coord> path = populateResult(maze);
+        return maze;
+    }
+
+    public static int repeatedStringMatch(String a, String b) {
+        int res = 0;
+        while (!a.contains(b) && a.length() > b.length() * 2) {
+           a = a + a;
+           res++;
+        }
+
+        return (a.length() > b.length() * 2) ? res : -1;
     }
 
     public static boolean isArraySorted(int[] arr, boolean asc) {
