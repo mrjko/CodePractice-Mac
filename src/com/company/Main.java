@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 public class Main {
 
     private static int COUNTER = 1;
+    private static TreeNode prev = null;
 
     static class StringLengthComparator implements Comparator<String> {
 
@@ -18,6 +19,48 @@ public class Main {
         public int compare(String o1, String o2) {
             return o2.length() - o1.length();
         }
+    }
+
+    public static void main(String[] args) {
+
+//        PriorityQueue<TreeNode> q = new PriorityQueue<>((a,b) -> {
+//            String test = "test";
+//            for (int i = 0; i < test.length(); i++) {
+//
+//            }
+//            return a.val - b.val;
+//        });
+//
+//        q.add(new TreeNode(3));
+//        q.add(new TreeNode(2));
+//        q.add(new TreeNode(1));
+//
+//        while (!q.isEmpty()) {
+//            echo(q.poll().val);
+//        }
+//
+//        String[] testArr = new String[]{"apple", "orange", "pepperoni"};
+
+//        Arrays.sort(testArr, new Comparator<String>() {
+//            @Override
+//            public int compare(String o1, String o2) {
+//                return o2.length() - o1.length();
+//            }
+//        });
+
+//        Arrays.sort(testArr, new StringLengthComparator());
+
+//        Arrays.sort(testArr, (a, b) -> b.length() - a.length());
+
+//        TreeNode[] testTreeNodeArr = new TreeNode[]{new TreeNode(1), new TreeNode(2)};
+//
+//        Arrays.sort(testTreeNodeArr, (a, b) -> b.val - a.val);
+//
+//        for (TreeNode n : testTreeNodeArr) {
+//            echo(n.val);
+//        }
+//
+
     }
 
     public static int searchInsert(int[] nums, int target) {
@@ -148,7 +191,6 @@ public class Main {
     }
 
     public static List<List<Integer>> amazonTest() {
-
 
         Comparator<List<Integer>> distComparator = new Comparator<List<Integer>>() {
             @Override
@@ -281,62 +323,14 @@ public class Main {
         return (c == '(') || (c == '{') || (c == '[');
     }
 
-    public static void main(String[] args) {
-
-//        PriorityQueue<TreeNode> q = new PriorityQueue<>((a,b) -> {
-//            String test = "test";
-//            for (int i = 0; i < test.length(); i++) {
-//
-//            }
-//            return a.val - b.val;
-//        });
-//
-//        q.add(new TreeNode(3));
-//        q.add(new TreeNode(2));
-//        q.add(new TreeNode(1));
-//
-//        while (!q.isEmpty()) {
-//            echo(q.poll().val);
-//        }
-//
-//        String[] testArr = new String[]{"apple", "orange", "pepperoni"};
-
-//        Arrays.sort(testArr, new Comparator<String>() {
-//            @Override
-//            public int compare(String o1, String o2) {
-//                return o2.length() - o1.length();
-//            }
-//        });
-
-//        Arrays.sort(testArr, new StringLengthComparator());
-
-//        Arrays.sort(testArr, (a, b) -> b.length() - a.length());
-
-//        TreeNode[] testTreeNodeArr = new TreeNode[]{new TreeNode(1), new TreeNode(2)};
-//
-//        Arrays.sort(testTreeNodeArr, (a, b) -> b.val - a.val);
-//
-//        for (TreeNode n : testTreeNodeArr) {
-//            echo(n.val);
-//        }
-//
-
-        //
-    //    Input: [[1,3],[2,6],[8,10],[15,18]]
-    //    Output: [[1,6],[8,10],[15,18]]
-
-
-        List<Interval> intervals = new ArrayList<>();
-        Interval i1 = new Interval(1,4);
-        Interval i2 = new Interval(0,2);
-        Interval i3 = new Interval(3,5);
-//        Interval i4 = new Interval(15,18);
-
-        intervals.add(i1);
-        intervals.add(i2);
-        intervals.add(i3);
-
-        echo(merge(intervals));
+    public static void flatten(TreeNode root) {
+        if (root == null)
+            return;
+        flatten(root.right);
+        flatten(root.left);
+        root.right = prev;
+        root.left = null;
+        prev = root;
     }
 
     public static List<Interval> merge(List<Interval> intervals) {
