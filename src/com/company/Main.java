@@ -321,7 +321,7 @@ public class Main {
 //        }
 //
 
-        echo(sortColors(new int[]{2,0,2,1,1,0}));
+        echo(sortColors(new int[]{2,0,1}));
     }
 
     // sort into 0,1,2
@@ -333,7 +333,7 @@ public class Main {
         int end = nums.length - 1;
         int i = 0;
 
-        while (start < end && i != end) {
+        while (start < end && i <= end) {
             if (nums[i] == 0) { // 0
                 temp = nums[start];
                 nums[start] = nums[i];
