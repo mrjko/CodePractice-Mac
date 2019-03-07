@@ -321,7 +321,52 @@ public class Main {
 //        }
 //
 
-        echo(sortColors(new int[]{2,0,1}));
+        //
+    //    Input: [[1,3],[2,6],[8,10],[15,18]]
+    //    Output: [[1,6],[8,10],[15,18]]
+
+
+        List<Interval> intervals = new ArrayList<>();
+        Interval i1 = new Interval(1,4);
+        Interval i2 = new Interval(0,2);
+        Interval i3 = new Interval(3,5);
+//        Interval i4 = new Interval(15,18);
+
+        intervals.add(i1);
+        intervals.add(i2);
+        intervals.add(i3);
+
+        echo(merge(intervals));
+    }
+
+    public static List<Interval> merge(List<Interval> intervals) {
+        List<Interval> res = new ArrayList<>();
+        //sort on starting time
+        Collections.sort(intervals, new Comparator<Interval>() {
+            @Override
+            public int compare(Interval o1, Interval o2) {
+                return o1.start - o2.start;
+            }
+        });
+
+        int i = 0;
+        while (i < intervals.size() - 1) {
+            // if the next starting time is before ending time for current we merge
+            Interval curr = intervals.get(i);
+            Interval next = intervals.get(i+1);
+            if (next.start <= curr.end) {
+                // remove curr and next, add new interval at curr position
+                int endValue = (curr.end > next.end) ? curr.end : next.end;
+                Interval merged = new Interval(curr.start, endValue);
+                intervals.remove(i);
+                intervals.remove(i);
+                intervals.add(i, merged);
+            } else {
+                i++;
+            }
+        }
+
+        return intervals;
     }
 
     // sort into 0,1,2
