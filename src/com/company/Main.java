@@ -320,7 +320,84 @@ public class Main {
 //            echo(n.val);
 //        }
 //
-        
+
+        echo(sortColors(new int[]{2,0,2,1,1,0}));
+    }
+
+    // sort into 0,1,2
+    // Could you come up with a one-pass algorithm using only constant space?
+    // if 2 just bring itt o the back and if 0 just bring it to the front
+    public static int[] sortColors(int[] nums) {
+        int temp;
+        int start = 0;
+        int end = nums.length - 1;
+        int i = 0;
+
+        while (start < end && i != end) {
+            if (nums[i] == 0) { // 0
+                temp = nums[start];
+                nums[start] = nums[i];
+                nums[i] = temp;
+                start++;
+                i++;
+            } else if (nums[i] == 2) { // 2
+                temp = nums[end];
+                nums[end] = nums[i];
+                nums[i] = temp;
+                end--;
+            } else { // 1
+                i++;
+            }
+        }
+
+        return nums;
+    }
+
+    public static int[] removeMoreThan3Duplicates(int[] nums) {
+        HashMap<Integer, Integer> count = new HashMap<>();
+        ArrayList<Integer> res = new ArrayList<>();
+        for (int i : nums) {
+            if (!count.containsKey(i)) {
+                count.put(i, 1);
+                res.add(i);
+            } else if (count.containsKey(i) && count.get(i) < 3) {
+                count.put(i, count.get(i) + 1);
+                res.add(i);
+            }
+        }
+
+        int[] resArr = new int[res.size()];
+        int i = 0;
+        for (Integer num : res) {
+            resArr[i] = num;
+            i++;
+        }
+
+        return resArr;
+    }
+
+    public static List<List<Integer>> threeSum(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> res = new LinkedList<>();
+        int i;
+        for (i = 0; i<nums.length-2; i++){
+            if(i == 0 || (i > 0 && nums[i]!=nums[i-1])){
+                int sum = 0-nums[i];
+                int lo = i+1, hi = nums.length-1;
+                while(lo<hi){
+                    if (nums[lo] + nums[hi] == sum){
+                        res.add(Arrays.asList(nums[i], nums[lo], nums[hi]));
+                        while(lo<hi && nums[lo] == nums[lo+1]) lo++;
+                        while(lo<hi && nums[hi] == nums[hi-1]) hi--;
+                        lo++;
+                        hi--;
+                    }else if (nums[lo] + nums[hi] < sum) lo++;
+                    else hi--;
+                }
+            }
+        }
+        echo(i);
+        return res;
     }
 
     public static void printMaze(int[][] maze) {
@@ -439,13 +516,19 @@ public class Main {
     }
 
     public static int repeatedStringMatch(String a, String b) {
-        int res = 0;
-        while (!a.contains(b) && a.length() > b.length() * 2) {
-           a = a + a;
-           res++;
+        int counter = 0;
+        String c = a;
+        int repeat = b.length() / a.length() + 1;
+        while (counter <= repeat){
+            counter++;
+            if (a.contains(b)) {
+                return counter;
+            } else {
+                a += c;
+            }
         }
 
-        return (a.length() > b.length() * 2) ? res : -1;
+        return -1;
     }
 
     public static boolean isArraySorted(int[] arr, boolean asc) {
