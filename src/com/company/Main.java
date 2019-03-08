@@ -63,14 +63,30 @@ public class Main {
 //        }
 //
 //
-        ListNode head = new ListNode(4);
-        head.next = new ListNode(2);
-        head.next.next = new ListNode(1);
-        head.next.next.next = new ListNode(3);
 
-        sortList(head);
 
-        head.print();
+        echo(reachNumber(3)); // 2
+        echo(reachNumber(2)); // 1
+        echo(reachNumber(4)); // 2
+
+    }
+
+    public static int reachNumber(int target) {
+        return reachNumberHelper(target, 0,0, 0);
+    }
+
+    public static int reachNumberHelper(int target, int currPos, int currSteps, int counter) {
+        if (currPos + currSteps == target) { // || (currPos - currSteps < target)) {
+            return counter;
+        }
+
+        if (currSteps > 10) return counter;
+
+        currSteps++;
+        counter++;
+
+        return Math.min(reachNumberHelper(target, currPos + currSteps, currSteps, counter),
+                        reachNumberHelper(target, currPos - currSteps, currSteps, counter));
 
     }
 
@@ -86,7 +102,7 @@ public class Main {
                 curr = curr.next;
             }
         }
-        return root;
+        return curr;
     }
 
     public static int findRadius(int[] houses, int[] heaters) {
