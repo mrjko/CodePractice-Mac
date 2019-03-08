@@ -13,6 +13,8 @@ public class Main {
     private static int COUNTER = 1;
     private static TreeNode prev = null;
 
+
+
     static class StringLengthComparator implements Comparator<String> {
 
         @Override
@@ -60,7 +62,120 @@ public class Main {
 //            echo(n.val);
 //        }
 //
+//
+        ListNode head = new ListNode(4);
+        head.next = new ListNode(2);
+        head.next.next = new ListNode(1);
+        head.next.next.next = new ListNode(3);
 
+        sortList(head);
+
+        head.print();
+
+    }
+
+    public static ListNode sortList(ListNode head) {
+        ListNode curr = head;
+        while (curr.next != null) {
+            ListNode next = curr.next;
+            if (next.val < curr.val) {
+                ListNode temp = next.next;
+                next.next = curr;
+                curr.next = temp;
+            } else {
+                curr = curr.next;
+            }
+        }
+        return root;
+    }
+
+    public static int findRadius(int[] houses, int[] heaters) {
+        Arrays.sort(houses);
+        Arrays.sort(heaters);
+
+        int i = 0, res = 0;
+        for (int house : houses) {
+            while (i < heaters.length - 1 && heaters[i] + heaters[i + 1] <= house * 2) {
+                i++;
+            }
+            res = Math.max(res, Math.abs(heaters[i] - house));
+        }
+
+        return res;
+    }
+
+    public static void fillMap(int[] houses, int heater, int[][] map, int index) {
+        int left = heater - 1;
+        int leftCounter = 0;
+        int right = heater + 1;
+        int rightCounter = 0;
+        while (left >= 0) {
+            map[index][left] = ++leftCounter;
+            left--;
+        }
+        while (right <= houses.length - 1) {
+            map[index][right] = ++rightCounter;
+            right++;
+        }
+
+        map[index][heater] = 0;
+    }
+
+    public static boolean checkPerfectNumber(int num) {
+        int i = num - 1;
+        int sum = 0;
+
+        while (i > 0) {
+            if (num % i == 0)
+                sum += i;
+            i--;
+        }
+
+        return (sum == num);
+    }
+
+    public static int lengthOfLastWord(String s) {
+        if (s == "") {
+            return 0;
+        }
+        String[] arr = s.split(" ");
+        return arr[arr.length - 1].length();
+    }
+
+    public static int numSquares(int n, int[] memo) {
+        int start = (int) Math.floor(Math.sqrt(n));
+        int min = Integer.MAX_VALUE;
+        while (start > 0) {
+            int res = numSquaresHelper(n, start, memo);
+            if (memo[n] == -1 || memo[n] > res) {
+                memo[n] = res;
+            }
+            min = Math.min(res, min);
+            start--;
+        }
+        return min;
+    }
+
+    public static int numSquares(int n) {
+        int[] memo = new int[n + 1];
+        Arrays.fill(memo, -1);
+        return numSquares(n, memo);
+    }
+
+    public static int numSquaresHelper(int n, int start, int[] memo) {
+
+        int curr = n - (start * start);
+
+        if (curr == 0) {
+            return 1;
+        } else if (curr < 0) {
+            return numSquaresHelper(n, start - 1, memo);
+        } else {
+            if (memo[curr] != -1) {
+                return 1 + memo[curr];
+            }
+            return 1 + numSquares(curr, memo);
+        }
     }
 
     public static int searchInsert(int[] nums, int target) {
