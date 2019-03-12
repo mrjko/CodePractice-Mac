@@ -2,6 +2,7 @@ package com.company;
 
 
 import com.company.Practice.*;
+
 import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -63,12 +64,185 @@ public class Main {
 //        }
 //
 //
+        echo(withoutString("xyzzy", "Y"));
+    }
 
+    
 
-        echo(reachNumber(3)); // 2
-        echo(reachNumber(2)); // 1
-        echo(reachNumber(4)); // 2
+    public static String withoutString(String base, String remove) {
+        StringBuilder sb = new StringBuilder();
 
+        for (int i = 0; i < base.length(); i++) {
+            if (Character.toLowerCase(remove.charAt(0)) == Character.toLowerCase(base.charAt(i))) {
+                String substring;
+                if (remove.length() < base.length() - i) {
+                    substring = base.substring(i, i + remove.length());
+                } else {
+                    substring = base.substring(i, base.length());
+                }
+                if (!substring.toLowerCase().equals(remove.toLowerCase())) {
+                    sb.append(substring);
+                }
+                i += remove.length() - 1;
+                continue;
+            }
+            sb.append(base.charAt(i));
+        }
+
+        return sb.toString();
+    }
+
+    public static String stringSplosion(String s) {
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        while (i <= s.length()) {
+            sb.append(s.substring(0, i));
+            i++;
+        }
+
+        return sb.toString();
+    }
+
+    public static boolean isSubsequentWord(int[] a, int[] b) {
+        for (int i = 0; i < a.length; i++) {
+            if (a[i] < b[i]) return false;
+        }
+        return true;
+    }
+
+    public static String longestSubsequentWord(String input, String[] words) {
+        int[] inputCount = new int[26];
+        int[] wordCount = new int[26];
+        Arrays.fill(inputCount, 0);
+        Arrays.fill(wordCount, 0);
+
+        Arrays.sort(words, (o1, o2) -> o2.length() - o1.length());
+
+        for (Character c : input.toCharArray()) {
+            inputCount[(int)Character.toLowerCase(c) - 97] = inputCount[(int)Character.toLowerCase(c) - 97] + 1;
+        }
+
+        for (String word : words) {
+            for (Character c : word.toCharArray()) {
+                wordCount[(int)Character.toLowerCase(c) - 97] = wordCount[(int)Character.toLowerCase(c) - 97] + 1;
+            }
+
+            if (isSubsequentWord(inputCount, wordCount)) { return word; }
+            Arrays.fill(wordCount,  0);
+
+        }
+
+        return "";
+    }
+
+    public static boolean isBorderCoord(char[][] board, int r, int c) {
+        return (r == 0 || r == board.length - 1) || (c == 0 || c == board[r].length - 1);
+    }
+
+    public static void fillFromBorder(char[][] board, int r, int c) {
+            // if coord is O, do the flip and propagate
+        if ((r < board.length && r >= 0) && (c < board[r].length && c >= 0)) {
+            if (board[r][c] == 'O') {
+                board[r][c] = 'X';
+                // fill from all directions
+                fillFromBorder(board, r + 1, c);
+                fillFromBorder(board, r - 1, c);
+                fillFromBorder(board, r, c + 1);
+                fillFromBorder(board, r, c - 1);
+            }
+        }
+    }
+
+    public static char[][] copyOf2DArray(char[][] board) {
+        char[][] copy = new char[board.length][];
+        for (int row = 0; row < board.length; row++) {
+            copy[row] = new char[board[row].length];
+            for (int col = 0; col < board[row].length; col++) {
+                copy[row][col] = board[row][col];
+            }
+        }
+        return copy;
+    }
+
+    public static void solve(char[][] board) {
+        // fill from borders
+        char[][] copy = copyOf2DArray(board);
+
+        for (int r = 0; r < copy.length; r++) {
+            for (int c = 0; c < copy[r].length; c++) {
+                if (isBorderCoord(copy, r, c)) {
+                    fillFromBorder(copy, r, c);
+                }
+            }
+        }
+
+        for (int r = 0; r < board.length; r++) {
+            for (int c = 0; c < board[r].length; c++) {
+                if (copy[r][c] == 'O') {
+                    board[r][c] = 'X';
+                }
+            }
+        }
+
+    }
+
+    public static class Pair {
+        public String word;
+        public Integer count;
+
+        public Pair(String word, Integer count) {
+            this.word = word;
+            this.count = count;
+        }
+
+    }
+
+    public static List<String> getNextWordsNotVisited(String word, List<String> wordList, List<String> visited) {
+        List<String> res = new ArrayList<>();
+        int i;
+        boolean foundDiff;
+        boolean isNextWord;
+        for (String s : wordList) {
+            i = 0;
+            foundDiff = false;
+            isNextWord = true;
+            // each word check if the there is one letter diff, if so add into list
+            for (char c : s.toCharArray()) {
+                if (word.charAt(i) != c) {
+                    if (!foundDiff) {
+                        foundDiff = true;
+                    } else {
+                        isNextWord = false;
+                    }
+                }
+                i++;
+            }
+            if (isNextWord && !visited.contains(s)) res.add(s);
+        }
+
+        return res;
+    }
+
+    public static int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        List<String> visited = new ArrayList<>();
+        Queue<Pair> queue = new LinkedList<>();
+        queue.add(new Pair(beginWord, 1));
+        int counter;
+
+        while (visited.size() != wordList.size() && !queue.isEmpty()) {
+            Pair curr = queue.poll();
+            counter = curr.count;
+            List<String> nexts = getNextWordsNotVisited(curr.word, wordList, visited);
+            for (String s : nexts) {
+                visited.add(s);
+                if (s == endWord) {
+                    return counter + 1;
+                }
+                queue.add(new Pair(s, counter + 1));
+            }
+        }
+
+        return 0;
     }
 
     public static int reachNumber(int target) {
@@ -80,7 +254,9 @@ public class Main {
             return counter;
         }
 
-        if (currSteps > 10) return counter;
+        if (Math.abs(target - currSteps) > 0) {
+            return Integer.MAX_VALUE;
+        }
 
         currSteps++;
         counter++;
