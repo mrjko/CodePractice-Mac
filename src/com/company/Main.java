@@ -64,10 +64,56 @@ public class Main {
 //        }
 //
 //
-        echo(withoutString("xyzzy", "Y"));
+        echo(canBalance(new int[]{1,1}));
     }
 
-    
+    public static boolean canBalance(int[] nums) {
+        int start = 0;
+        int end = nums.length - 1;
+
+        int leftSide = 0;
+        int rightSide = 0;
+
+        while (start <= end) {
+            if (leftSide < rightSide) {
+                leftSide += nums[start];
+                start++;
+            } else {
+                rightSide += nums[end];
+                end--;
+            }
+        }
+
+        return (leftSide == rightSide && nums.length != 1);
+    }
+
+    public static int getNumberAtIndex(String str, int index) {
+        StringBuilder sb = new StringBuilder();
+
+        while (index < str.length() && Character.isDigit(str.charAt(index))) {
+            sb.append(str.charAt(index));
+            index++;
+        }
+
+        return Integer.parseInt(sb.toString());
+    }
+
+    public static int sumNumbers(String str) {
+        int res = 0;
+        int i = 0;
+
+        while (i < str.length()) {
+            if (Character.isDigit(str.charAt(i))) {
+                Integer num = getNumberAtIndex(str, i);
+                res += num;
+                i += num.toString().length();
+            } else {
+                i++;
+            }
+        }
+
+        return res;
+    }
 
     public static String withoutString(String base, String remove) {
         StringBuilder sb = new StringBuilder();
