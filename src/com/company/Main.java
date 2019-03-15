@@ -63,8 +63,335 @@ public class Main {
 //            echo(n.val);
 //        }
 //
-//
-        echo(canBalance(new int[]{1,1}));
+
+//        for (Map.Entry<String, Integer> entry : test.entrySet()) {
+//            String key = entry.getKey();
+//            Integer value = entry.getValue();
+//            System.out.println("key: " + key + ", value: " + value);
+//        }
+
+
+
+
+        echo(findLongestSubstring("aaabbb")); // aaabbb
+        echo(findLongestSubstring("bbbbaaabbbbbbbbbaaaa")); // bbbbaaaa
+        echo(findLongestSubstring("a")); // ""
+        echo(findLongestSubstring("aabb")); // ""
+        echo(findLongestSubstring("b")); // ""
+        echo(findLongestSubstring("")); // ""
+
+
+    }
+
+    public static String findLongestSubstring(String s) {
+        String res = "";
+
+        for (int i = 0; i < s.length(); i++) {
+            String curr = getCurrLongest(s, i);
+
+            if (res.length() < curr.length()) {
+                res = curr;
+            }
+        }
+
+        return res;
+    }
+
+    public static boolean isVowel(char c) {
+        return (c == 'a');
+    }
+
+    public static String getCurrLongest(String s, int index) {
+        int count = 0;
+        for (int i = index; i < s.length(); i++) {
+            if (isVowel(s.charAt(i))) {
+                count++;
+            } else {
+                count--;
+            }
+
+            if (count == 0) {
+                return s.substring(index, i + 1);
+            }
+        }
+        return "";
+    }
+
+    public static boolean doesPathExistForSum(TreeNode n, int sum) {
+        if (sum == 0) return true;
+        if ((n == null)) return false;
+
+        return doesPathExistForSum(n.left, sum - n.val) || doesPathExistForSum(n.right, sum - n.val);
+    }
+
+//    I can be placed before V (5) and X (10) to make 4 and 9.
+//    X can be placed before L (50) and C (100) to make 40 and 90.
+//    C can be placed before D (500) and M (1000) to make 400 and 900.
+
+    public static int romanToInt(String s) {
+        int res = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            int curr = s.charAt(i);
+            int next = '~';
+            if (i+1 < s.length()) {
+                next = s.charAt(i+1);
+            }
+
+            if (curr == 'I') {
+                if (next == 'V') {
+                    res += 4;
+                    i++;
+                } else if (next == 'X') {
+                    res += 9;
+                    i++;
+                } else {
+                    res += 1;
+                }
+            }
+
+            if (curr == 'X') {
+                if (next == 'L') {
+                    res += 40;
+                    i++;
+                } else if (next == 'C') {
+                    res += 90;
+                    i++;
+                } else {
+                    res += 10;
+                }
+            }
+
+            if (curr == 'C') {
+                if (next == 'D') {
+                    res += 400;
+                    i++;
+                } else if (next == 'M') {
+                    res += 900;
+                    i++;
+                } else {
+                    res += 100;
+                }
+            }
+
+            if (curr == 'L') {
+                res += 50;
+            }
+
+            if (curr == 'V') {
+                res += 5;
+            }
+
+            if (curr == 'D') {
+                res += 500;
+            }
+
+            if (curr == 'M') {
+                res += 1000;
+            }
+
+        }
+
+
+        return res;
+    }
+
+    public static String getHint(String secret, String guess) {
+        HashSet<Character> set = new HashSet<>();
+        HashMap<Character, Integer> map = new HashMap<>();
+
+        int bullCount = 0;
+        int cowCount = 0;
+
+        for (int i = 0; i < secret.length(); i++) {
+            if (secret.charAt(i) == guess.charAt(i)) {
+                bullCount++;
+                map.computeIfPresent(guess.charAt(i), (k,v) -> v + 1);
+                map.putIfAbsent(guess.charAt(i), 1);
+            } else {
+                if (secret.contains(guess.subSequence(i,i+1))) {
+                    if (map.containsKey(guess.charAt(i)) || set.contains(guess.charAt(i))) {
+                        if (!set.contains(guess.charAt(i))) {
+                            cowCount++;
+                        }
+                        set.add(guess.charAt(i));
+                    } else {
+                        cowCount++;
+                        set.add(guess.charAt(i));
+                    }
+                }
+
+            }
+
+        }
+
+        return bullCount + "A" + cowCount + "B";
+    }
+
+    public static boolean isToeplitzMatrix(int[][] matrix) {
+        HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+
+        for (int r = 0; r < matrix.length; r++) {
+            for (int c = 0; c < matrix[r].length; c++) {
+                int key = r-c;
+                if (map.containsKey(key)) {
+                    if (matrix[r][c] == map.get(key)) {
+                        return false;
+                    }
+                }
+                map.putIfAbsent(key, matrix[r][c]);
+            }
+        }
+
+        return true;
+    }
+
+    static int DIRECTION = 4;
+    static int[] dirR = new int[]{1, -1, 0,  0};
+    static int[] dirC = new int[]{0,  0, 1, -1};
+
+    public static class Coordinate {
+        int row;
+        int col;
+        char val;
+        int steps;
+
+        public Coordinate(int r, int c, char v, int s) {
+            this.row = r;
+            this.col = c;
+            this.val = v;
+            this.steps = s;
+        }
+    }
+
+    public static Coordinate findStartCoord(char[][] maze) {
+        for (int r = 0; r < maze.length; r++) {
+            for (int c = 0; c < maze[r].length; c++) {
+                if (maze[r][c] == 's') {
+                    Coordinate start = new Coordinate(r, c, 's', 0);
+                    return start;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static boolean isValidCoordinate(int r, int c, char[][] maze) {
+        if (r < 0 || c < 0) return false;
+        if (r >= maze.length || c >= maze[r].length) return false;
+        if (maze[r][c] == '#') return false;
+
+        return true;
+    }
+
+    // returns -1 if no path, else shortest number of steps
+    public static int solveMaze(char[][] maze) {
+        LinkedList<Coordinate> queue = new LinkedList<Coordinate>();
+        Coordinate start = findStartCoord(maze);
+        queue.add(start);
+
+        while (!queue.isEmpty()) {
+            Coordinate curr = queue.poll();
+
+            if (curr.val == 'e') { return curr.steps; }
+
+            for (int i = 0; i < DIRECTION; i++) {
+                int newr = curr.row + dirR[i];
+                int newc = curr.col + dirC[i];
+                maze[curr.row][curr.col] = '#';
+
+                if (isValidCoordinate(newr, newc, maze)) {
+                    echo("is valid: " + newr + " , " + newc);
+                    queue.add(new Coordinate(newr, newc, maze[newr][newc], curr.steps + 1));
+                }
+            }
+
+        }
+
+        return -1;
+    }
+
+    public static boolean validColor(int[][] graph, int[] colors, int color, int node) {
+        if (colors[node] != 0) {
+            return colors[node] == color;
+        }
+        colors[node] = color;
+        for (int next : graph[node]) {
+            if (!validColor(graph, colors, -color, next)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isBipartite(int[][] graph) {
+        int n = graph.length;
+        int[] colors = new int[n];
+
+        for (int i = 0; i < n; i++) {              //This graph might be a disconnected graph. So check each unvisited node.
+            if (colors[i] == 0 && !validColor(graph, colors, 1, i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static Map<String, String> mapShare(Map<String, String> map) {
+        if (map.containsKey("c")) {
+            map.remove("c");
+        }
+
+        if (map.containsKey("a") && map.containsKey("b")) {
+            map.put("b", map.get("a"));
+        }
+
+        return map;
+    }
+
+    public static boolean makeBricks(int small, int big, int goal) {
+        if (goal > small + big * 5)
+            return false;
+        else
+            return goal % 5 <= small;
+    }
+
+    public static String decompress(String str) {
+        StringBuilder res = new StringBuilder();
+        StringBuilder loop = new StringBuilder();
+        int start = -1;
+        int openBrackets = 0;
+
+        for (int i = 0; i < str.length(); i++) {
+
+            if (Character.isDigit(str.charAt(i))) {
+                if (openBrackets == 0) {
+                    loop.append(str.charAt(i));
+                }
+            } else if (str.charAt(i) == '[') {
+                if (start == -1) {
+                    start = i + 1;
+                }
+                openBrackets++;
+            } else if (str.charAt(i) == ']') {
+                openBrackets--;
+                if (openBrackets == 0) {
+                    String substring = decompress(str.substring(start, i));
+                    int loopAmt = Integer.parseInt(loop.toString());
+                    while (loopAmt > 0) {
+                        loopAmt--;
+                        res.append(substring);
+                    }
+                    loop.setLength(0);
+                    start = -1;
+                }
+            } else {
+                if (openBrackets == 0) {
+                    res.append(str.charAt(i));
+                }
+            }
+        }
+
+        return res.toString();
     }
 
     public static boolean canBalance(int[] nums) {
