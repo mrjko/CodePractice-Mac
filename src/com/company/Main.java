@@ -14,8 +14,6 @@ public class Main {
     private static int COUNTER = 1;
     private static TreeNode prev = null;
 
-
-
     static class StringLengthComparator implements Comparator<String> {
 
         @Override
@@ -70,16 +68,9 @@ public class Main {
 //            System.out.println("key: " + key + ", value: " + value);
 //        }
 
-
-
-
-        echo(findLongestSubstring("aaabbb")); // aaabbb
-        echo(findLongestSubstring("bbbbaaabbbbbbbbbaaaa")); // bbbbaaaa
-        echo(findLongestSubstring("a")); // ""
-        echo(findLongestSubstring("aabb")); // ""
-        echo(findLongestSubstring("b")); // ""
-        echo(findLongestSubstring("")); // ""
-
+//        echo(solveMaze(new char[][]{{'s', '#', '.', '.', 'e'},
+//                                    {'.', '.', '.', '#', '.'},
+//                                    {'.', '#', '.', 'e', '.'}}));
 
     }
 
@@ -246,23 +237,17 @@ public class Main {
         return true;
     }
 
-    static int DIRECTION = 4;
-    static int[] dirR = new int[]{1, -1, 0,  0};
-    static int[] dirC = new int[]{0,  0, 1, -1};
+    public enum MazeSetUp {
+        INSTANCE;
 
-    public static class Coordinate {
-        int row;
-        int col;
-        char val;
-        int steps;
-
-        public Coordinate(int r, int c, char v, int s) {
-            this.row = r;
-            this.col = c;
-            this.val = v;
-            this.steps = s;
-        }
+        int DIRECTION = 4;
+        int[] dirR = new int[]{1, -1, 0,  0};
+        int[] dirC = new int[]{0,  0, 1, -1};
     }
+
+//    static int DIRECTION = 4;
+//    static int[] dirR = new int[]{1, -1, 0,  0};
+//    static int[] dirC = new int[]{0,  0, 1, -1};
 
     public static Coordinate findStartCoord(char[][] maze) {
         for (int r = 0; r < maze.length; r++) {
@@ -290,18 +275,19 @@ public class Main {
         Coordinate start = findStartCoord(maze);
         queue.add(start);
 
+        MazeSetUp config = MazeSetUp.INSTANCE;
+
         while (!queue.isEmpty()) {
             Coordinate curr = queue.poll();
 
             if (curr.val == 'e') { return curr.steps; }
 
-            for (int i = 0; i < DIRECTION; i++) {
-                int newr = curr.row + dirR[i];
-                int newc = curr.col + dirC[i];
+            for (int i = 0; i < config.DIRECTION; i++) {
+                int newr = curr.row + config.dirR[i];
+                int newc = curr.col + config.dirC[i];
                 maze[curr.row][curr.col] = '#';
 
                 if (isValidCoordinate(newr, newc, maze)) {
-                    echo("is valid: " + newr + " , " + newc);
                     queue.add(new Coordinate(newr, newc, maze[newr][newc], curr.steps + 1));
                 }
             }
