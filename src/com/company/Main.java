@@ -72,6 +72,21 @@ public class Main {
 //                                    {'.', '.', '.', '#', '.'},
 //                                    {'.', '#', '.', 'e', '.'}}));
 
+        echo(twoSumIndex(new int[]{-10,2,19,15}, 9));
+
+    }
+
+    public static int[] twoSumIndex(int[] nums, int target) {
+        HashMap<Integer, Integer> valueToIndex = new HashMap<>();
+
+        for (int i = 0; i < nums.length; i++) {
+            valueToIndex.putIfAbsent(nums[i], i);
+            if (valueToIndex.containsKey(target - nums[i]) && (nums[i]*2 != target)) {
+                return new int[]{valueToIndex.get(nums[i]), valueToIndex.get(target - nums[i])};
+            }
+        }
+        
+        return new int[]{};
     }
 
     public static String findLongestSubstring(String s) {
